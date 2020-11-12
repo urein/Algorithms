@@ -1,1 +1,42 @@
+memeory = {}
+
+
+def fibonacci_n(n: int):
+    """
+    get n-th item of Fibonacci with recursion
+    """
+    assert n >= 0
+    
+    # memeory search to avoid repeated calculation during recursion
+    if n in memeory:
+        return memeory[n]
+    # exit
+    if n in [0, 1]:
+        return 1
+    # recursion
+    ret = fibonacci_n(n-1) + fibonacci_n(n-2)
+    memeory[n] = ret
+    return ret
+
+
+def fibonacci_n_(n: int):
+    """
+    get n-th item of Fibonacci without recursion
+    """
+    assert n >= 0
+   
+    if n in [0, 1]:
+        return 1
+
+    num1 = num2 = 1
+    for i in range(2, n):
+        tmp = num2
+        num2 = num1 + num2
+        num1 = tmp
+
+    return num1 + num2
+
+
+if __name__ == '__main__':
+    print(fibonacci_n(100))
 

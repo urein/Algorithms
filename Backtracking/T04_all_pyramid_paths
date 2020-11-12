@@ -1,0 +1,50 @@
+"""
+Get all paths from the top of the pyramid to the bottom.
+Each time we can only choose the adjacent element on the left side or right side.
+For instance, if now we are at 26, next step can only be 15 or 8
+
+           13
+         11   8
+       12   7   26
+     6   14   15   8
+   12  17   13   24   11
+   
+"""
+
+
+class Solution:
+    def __init__(self, pyramid):
+        self.res = [pyramid[0][0]]
+        self.pyramid = pyramid
+
+    def all_path(self, depth, x, y):
+        """
+        get all potential paths from the current location (x, y)
+        """
+        # recursion exit
+        if depth == len(self.pyramid):
+            print(self.res)
+            return
+
+        # choose left side
+        self.res.append(pyramid[x+1][y])  # set
+        self.all_path(depth+1, x+1, y)  # recursion
+        self.res.pop()  # reset
+
+        # choose right side
+        self.res.append(pyramid[x+1][y+1])  # set
+        self.all_path(depth+1, x+1, y+1)  # recursion
+        self.res.pop()  # reset
+
+
+if __name__ == '__main__':
+    pyramid = [
+        [13],
+        [11, 8],
+        [12, 7, 26],
+        [6, 14, 15, 8],
+        [12, 17, 13, 24, 11]
+    ]
+
+    s = Solution(pyramid)
+    s.all_path(1, 0, 0)

@@ -1,0 +1,42 @@
+def binary_search(l: list, left, right, target):
+    """
+    binary search with recursion
+    """
+    if left > right:
+        return False
+    mid = (left + right) // 2
+    if target == l[mid]:
+        return True, mid
+    elif target < l[mid]:
+        # search the left side
+        ret = binary_search(l, left, mid - 1, target)
+    else:
+        # search the right side
+        ret = binary_search(l, mid + 1, right, target)
+
+    return ret
+
+
+def binary_search_(l: list, target):
+    """
+    binary search without recursion
+    """
+    i_left, i_right = 0, len(l)-1
+    while i_left <= i_right:
+        i_mid = (i_left + i_right) // 2
+        if target == l[i_mid]:
+            return True, i_mid
+        elif target < l[i_mid]:
+            # search the left side
+            i_right = i_mid - 1
+        else:
+            # search the right side
+            i_left = i_mid + 1
+
+    return False, -1
+
+
+if __name__ == '__main__':
+    data = [1, 3, 5, 6, 8, 10, 13, 21]
+    print(binary_search(data, 0, len(data)-1, 21))
+    print(binary_search_(data, 21))

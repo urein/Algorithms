@@ -1,0 +1,20 @@
+class Solution:
+    def __init__(self):
+        self.res = []
+
+    def num_division(self, num: int):
+        if num == 0:
+            print('+'.join([str(i) for i in self.res]))
+            return
+        for d in range(1, num+1):
+            # set
+            self.res.append(d)
+            # recursion
+            self.num_division(num-d)
+            # reset
+            self.res.pop()
+
+
+if __name__ == '__main__':
+    s = Solution()
+    s.num_division(5)

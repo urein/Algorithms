@@ -1,0 +1,162 @@
+"""
+0-1 Knapsack Problem
+
+We can bring items with a total weight of a kg.
+Each item has its value and weight.
+How can we maximize the total value.
+
+assume:
+    a = 5kg
+
+    item    x1  x2  x3
+    weight  3   2   5
+    value   8   5   12
+"""
+
+
+class Solution_BT:
+    """
+    solved by Backtracking
+    enumerate all possibilities -> inefficient
+    """
+    def __init__(self, info):
+        self.info = info
+        self.select = []
+        self.max_select = []
+        self.max_value = 0
+
+    def back_tracking(self, i_item, rest):
+        if i_item == 3:
+            vals = []
+            for idx, mark in enumerate(self.select):
+                vals.append(mark * self.info[idx][1])
+            tmp_sum = sum(vals)
+            if tmp_sum > self.max_value:
+                self.max_value = tmp_sum
+                self.max_select = self.select[:]
+            return
+
+        # put
+        if rest >= self.info[i_item][0]:
+            self.select.append(1)  # set
+            self.back_tracking(i_item + 1, rest - self.info[i_item][0])  # recursion
+            self.select.pop() # reset
+
+        # not put
+        self.select.append(0)  # set
+        self.back_tracking(i_item + 1, rest)  # recursion
+        self.select.pop()  # reset
+
+
+class Solution_MS:
+    """
+    solved by Memory Search
+    performance is better than backtracking
+    """
+    def __init__(self, info):
+        self.info = info
+        self.memory = {}
+
+    def memory_search(self, i_item, rest):
+        # search memeory
+        if '{}_{}'.format(i_item, rest) in self.memory:
+            return self.memory['{}_{}'.format(i_item, rest)]
+
+        # recursion exit
+        if i_item == 2:
+            max_ = self.info[i_item][1] if rest >= self.info[i_item][0] else 0
+            self.memory['{}_{}'.format(i_item, rest)] = max_
+            return max_
+
+        # make decision
+        tmp_val = []
+        tmp_val.append(self.memory_search(i_item + 1, rest))  # don't put
+        if rest >= self.info[i_item][0]:
+            tmp_val.append(self.info[i_item][1] + self.memory_search(i_item+1, rest-self.info[i_item][0]))  # put
+
+        max_ = max(tmp_val)
+        self.memory['{}_{}'.format(i_item, rest)] = max_
+        return max_
+
+
+class Solution_DP:
+    """
+    solved by Dynamic Programming
+    """
+    def __init__(self, info, total):
+        self.info = info
+        self.total = total
+        self.pre_max = []
+
+    def initialize_last(self):
+        for w_in in range(self.info[-1][0]):
+            self.pre_max.append(0)
+        for w_in in range(self.info[-1][0], self.total+1):
+            self.pre_max.append(1)
+
+    def dp(self):
+        self.initialize_last()
+        for i_item in range(1, -1, -1):
+            start = 0
+            if i_item == 0:
+                # for the 1st item, w_in can only be total kg
+                # it's unnecessary to range from 0 to total
+                start = self.total
+
+            new_pre_max = []
+            for w_in in range(start, self.total + 1):
+                # (w_in)kg is given to i_item,
+                v_tmp = []
+                # (w_next)kg for next item, (w_in-w_next)kg for itself
+                for w_next in range(w_in + 1):
+                    if w_in - w_next >= self.info[i_item][0]:
+                        v_tmp.append(self.info[i_item][1] + self.pre_max[w_next])
+                    else:
+                        v_tmp.append(self.pre_max[w_next])
+                new_pre_max.append(max(v_tmp))
+            self.pre_max = new_pre_max
+
+        return self.pre_max
+
+    def dp_new(self):
+        self.initialize_last()
+        for i_item in range(1, -1, -1):
+            start = 0
+            if i_item == 0:
+                # for the 1st item, w_in can only be total kg
+                # it's unnecessary to range from 0 to total
+                start = self.total
+
+            new_pre_max = []
+            for w_in in range(start, self.total + 1):
+                # (w_in)kg is given to i_item,
+                v_tmp = []
+                # For 0-1 Knapsack Problem, it's unnecessary to consider all weights from 0kg to w_in kg
+                # if w_in > weight of current item, put it in and pass the rest to the next item,
+                # or don't put it in, just pass all w_in to the next item
+                if w_in >= self.info[i_item][0]:
+                    v_tmp.append(self.info[i_item][1] + self.pre_max[w_in-self.info[i_item][0]])
+                v_tmp.append(self.pre_max[w_in])
+                new_pre_max.append(max(v_tmp))
+            self.pre_max = new_pre_max
+
+        return self.pre_max
+
+
+if __name__ == '__main__':
+    info = [[3, 8],
+            [2, 5],
+            [5, 12]]
+
+    # # backtracking
+    # s_bt = Solution_BT(info)
+    # s_bt.back_tracking(0, 5)
+    # print("select: {} -> max value: {}".format(s_bt.max_select, s_bt.max_value))
+
+    # # memeory search
+    # s_ms = Solution_MS(info)
+    # print(s_ms.memory_search(0, 5))
+    # print(s_ms.memory)
+
+    s_dp = Solution_DP(info, 5)
+    print(s_dp.dp_new())

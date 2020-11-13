@@ -1,0 +1,71 @@
+"""
+Get the path with the most sum from top to bottom.
+Each step we can only choose the adjacent element on the left side or right side.
+For instance, if now we are at 26, next step can only be 15 or 8
+
+           13
+         11   8
+       12   7   26
+     6   14   15   8
+   12  17   13   24   11
+"""
+
+
+class Solution_DP:
+    """
+    solve by Dynamic Programming
+    """
+    def __init__(self, pyramid):
+        self.pyramid = pyramid
+    def dp(self):
+        for i_line in range(3, -1, -1):  # from bottom to top
+            for i in range(i_line+1):
+                pyramid[i_line][i] += max(pyramid[i_line+1][i], pyramid[i_line+1][i+1])
+        return pyramid[0][0]
+
+
+class Solution_MS:
+    """
+    solve by Memory Search
+    """
+    def __init__(self, pyramid):
+        self.pyramid = pyramid
+        self.memory = {}
+
+    def search_max(self, x, y):
+        """
+        from current position (x, y), search the path with the most sum
+        x: idx of row
+        y: idx of col
+        """
+
+        # search memory
+        if '{}_{}'.format(x, y) in self.memory:
+            return self.memory['{}_{}'.format(x, y)]
+
+        if x == len(self.pyramid) - 1:
+            return pyramid[x][y]
+
+        l_max = self.search_max(x+1, y)  # max of left
+        r_max = self.search_max(x+1, y+1)  # max of right
+        max_ = pyramid[x][y] + max(l_max, r_max)
+        self.memory['{}_{}'.format(x, y)] = max_
+
+        return max_
+
+
+if __name__ == '__main__':
+    pyramid = [
+        [13],
+        [11, 8],
+        [12, 7, 26],
+        [6, 14, 15, 8],
+        [12, 17, 13, 24, 11]
+    ]
+
+    s_dp = Solution_DP(pyramid)
+    print(s_dp.dp())
+
+    # s_ms = Solution_MS(pyramid)
+    # print(s_ms.search_max(0, 0))
+    # print(s_ms.memory)

@@ -1,0 +1,57 @@
+void mySwap(int& a, int& b)
+{
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+每次都从第一个元素开始，依次与后面相邻的元素进行比较，将较大者不断向后排，执行完成后都会排好一个最大的元素。因此外层循环总共需要执行length-1次（最后一个元素不用排）。
+每次排好一个元素后，向后依次比较的次数就会减少。因此内层循的环次数与外层有关。内层永远从j=0开始，假设外层i=0，j需要走到j=length-2，并它后面的arr[length-1]进行比较，因此内层的j!=length-i-1。
+
+void BubbleSort(int* arr, int length)
+{
+	if (arr == nullptr || length < 0)
+	{
+		cout << "Wrong Input" << endl;
+		return;
+	}
+
+	for (int i = 0; i != length - 1; ++i)
+	{
+		for (int j = 0; j != length - i - 1; ++j)
+		{
+			if (arr[j] > arr[j + 1])
+				mySwap(arr[j], arr[j + 1]);
+		}
+	}
+}
+
+
+改进：假如已经发现剩余序列是有序的了，就无须再进行后续任何比较了。降低代码的复杂度。
+为此我们设置一个restInOrder的flag，为了保证第一次能够进入循环，首秀按将其初始化为false。进入循环后马上将其设置为true。
+只要内层循环不涉及任何交换元素的操作，表示剩余序列有序，此时restInOrder便为true，下次则取法进入外层循环，直接退出。
+改进后的方法当初始序列即为有序时，时间复杂度为O(n)而非O(n^2)。
+
+
+void BubbleSort(int* arr, int length)
+{
+	if (arr == nullptr || length < 0)
+	{
+		cout << "Wrong Input" << endl;
+		return;
+	}
+	
+	bool restInOrder = false;
+	for (int i = 0; i != length - 1 && !restInOrder; ++i)
+	{
+		restInOrder = true;
+		for (int j = 0; j != length - i - 1; ++j)
+		{
+			if (arr[j] > arr[j + 1])
+			{
+				mySwap(arr[j], arr[j + 1]);
+				restInOrder = false;
+			}
+		}
+	}
+}

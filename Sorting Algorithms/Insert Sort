@@ -1,0 +1,39 @@
+void mySwap(int& a, int& b)
+{
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+插入排序的思想和打牌时整理手中牌的顺序的过程类似。当我们抓到一张新牌后，需要将其插入到手里所有牌中的合适位置，保持手牌有序。这就是插入排序。
+因此，整个序列可以分成两个部分，前部分为有序（手牌），后部分为无序（新牌）。具体做法是如下：
+首先将arr[0]认定为有序，然后依次将arr[1]到arr[length-1]插入到前面合适的位置，具体插入的过程是将arr[k]依次与前面的arr[k-1]进行比价，只要更小就往前排，直到找到正确的位置。
+因为外层循环从arr[1]开始到arr[length-1]。内层循环从arr[i]开始，一直向前比较到arr[0]，如果中间找到合适位置(stopCmp=true)时就可以直接退出。
+
+void InsertSort(int* arr, unsigned length)
+{
+	for (int i = 1; i != length; i++)
+	{
+		bool stopCmp = false;
+		for (int j = i; j > 0 && !stopCmp; --j)
+		{
+			if (arr[j] < arr[j - 1])
+				mySwap(arr[j], arr[j - 1]);
+			else
+				stopCmp = true;
+		}
+	}
+}
+
+
+int main()
+{
+	int arr[]{ 1, 5, 4, 9, 10, 6, 8, 3 };
+	unsigned len = sizeof(arr) / sizeof(arr[0]);
+	InsertSort(arr, len);
+
+	for (int i = 0; i != len; ++i)
+		cout << arr[i] << " ";
+	cout << endl;
+	return 0;
+}

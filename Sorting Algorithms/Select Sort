@@ -1,0 +1,41 @@
+void mySwap(int& a, int& b)
+{
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+
+选择排序的思想是，找到后面子序列中最小的元素并将其换到前面。
+比如一开始假设arr[0]为最小的元素，然后依次在arr[1]到arr[length-1]中寻找最小值，如果有比arr[0]小的，就将两者互换。此时arr[0]就是序列中最小的元素。
+然后寻找序列中第二小的元素。一开始假设arr[1]为剩余子序列最小的元素，然后依次在arr[2]到arr[length-1]中寻找最小值，如果有比arr[1]小的就将两者互换。此时arr[1]也排好了。
+以此类推，依次将子序列最小的元素排到前面。因此外层循环总共需要排length-1次（最后一个元素一定是最大的，不用排）。内层则从arr[i+1]开始一直找到序列的最后arr[length-1]。
+
+
+void SelectSort(int* arr, unsigned length)
+{
+	for (int i = 0; i != length - 1; ++i)
+	{
+		int minIdx = i;
+		for (int j = i + 1; j != length; ++j)
+		{
+			if (arr[j] < arr[minIdx])
+				minIdx = j;
+		}
+		if (minIdx != i)
+			mySwap(arr[i], arr[minIdx]);
+	}
+}
+
+
+int main()
+{
+	int arr[]{ 1, 5, 4, 9, 10, 6, 8, 3 };
+	unsigned len = sizeof(arr) / sizeof(arr[0]);
+	SelectSort(arr, len);
+
+	for (int i = 0; i != len; ++i)
+		cout << arr[i] << " ";
+	cout << endl;
+	return 0;
+}

@@ -1,0 +1,41 @@
+void QuickSort(int* arr, int startIdx, int endIdx)
+{
+	int diffLen = endIdx - startIdx;
+	if (diffLen <= 0)
+		return;
+
+	int target = arr[startIdx];
+	int idx1 = startIdx;
+	int idx2 = endIdx;
+
+	while (idx1 != idx2)
+	{
+		while (arr[idx2] >= target && idx2 > idx1)
+			--idx2;
+		arr[idx1] = arr[idx2];
+
+		while (arr[idx1] < target && idx1 < idx2)
+			++idx1;
+		arr[idx2] = arr[idx1];
+	}
+	arr[idx1] = target;
+
+	QuickSort(arr, startIdx, idx1 - 1);
+	QuickSort(arr, idx1 + 1, endIdx);
+
+}
+
+
+
+int main()
+{
+	int arr[]{ 6, 3, 7, 10, 3, 7, 8, 9, 6 };
+	unsigned len = sizeof(arr) / sizeof(arr[0]);
+	QuickSort(arr, 0, len - 1);
+
+	for (int i = 0; i != len; ++i)
+		cout << arr[i] << " ";
+	cout << endl;
+
+	return 0;
+}

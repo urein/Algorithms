@@ -1,3 +1,12 @@
+快速排序思想：
+- 将序列的第一个元素取出来作为target。
+- 使用两个指针，p1指向序列头，p2指向序列尾
+- 由于首元素已经被“取走”，首先移动p2，只要arr[p2]不小于target就不断向左移动p2，直到arr[p2]小于target时将arr[p1]的值赋为arr[p2]
+- 然后移动p1，只要arr[p1]不大于target就向右不断移动p1，直到arr[p1]大于target时将arr[p2]的值赋为arr[p1]
+- 重复上述操作，直到p1与p2相遇，将target插入到arr[p1](或[p2])处，此时target左侧的数都比target小，右侧的数都比target大，于是将target这个元素放到了排序序列中正确的位置
+- 递归地对target左侧和右侧的子序列执行上述同样的操作，直到子序列的长度小于等于0时退出。此时已将所有元素放到了正确的位置上。排序完毕。
+
+
 void QuickSort(int* arr, int startIdx, int endIdx)
 {
 	int diffLen = endIdx - startIdx;
